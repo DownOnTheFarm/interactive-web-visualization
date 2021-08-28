@@ -81,7 +81,7 @@ function dataByID() {
         orientation: "h",
         text: topLabels,
         marker: {
-            color: "rgb(31, 119, 180)",
+            color: "rgb(31,119,180)",
             opacity: 0.6
         }
     }];
