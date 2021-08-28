@@ -1,7 +1,7 @@
 d3.json("samples.json").then( data => {
     console.log(data);
 
-    // create the dropdown menu list
+    // Create Dropdown Menu
     let select = document.getElementById("selDataset")
     let dropDowns = data.names;
     console.log(dropDowns);
@@ -18,66 +18,62 @@ d3.json("samples.json").then( data => {
     
 });
 
-// create charts to display by chosen id from dropdown
+// Create Charts to Display from Dropdown
 function dataByID() {
     d3.json("samples.json").then( data => {
 
-    // get the value of the selection
+    // Get value of the selection
     let id = d3.select("#selDataset").property("value");
     
-    // filter samples data based on user selection
+    // Filter data based on user selection
     let filteredId = data.samples.filter((d) => d.id === id);
     console.log(filteredId);
-
-    // SETTING VARIABLES FOR OUTPUT
     
-    // retreive just the sample_values ---------------------
+    // Retreive just sample_values 
     let sampleVs = filteredId.map(d => d.sample_values).sort();
 
-    // get all samples for bubble chart
+    // Get all samples for bubble chart
     let allSamples = sampleVs[0];
 
-    // get the top 10 sample_values for bar chart
+    // Get the Top 10 sample_values for bar chart
     let topSamples = allSamples.slice(0, 10).reverse();
     console.log(topSamples);
 
-    // retrieve the otu_ids  -------------------------
+    // Retrieve otu_ids 
     let ids = filteredId.map(d => d.otu_ids).sort();
 
-    // get all otu_ids, convert to string, split, and add OTU to each otu_id
+    // Get all otu_ids, convert to string, split, and add OTU to each otu_id
     let allIds = ids[0];
 
-    // get the top 10 otu_ids for bar chart
+    // Get the Top 10 otu_ids for bar chart
     let topIds = allIds.slice(0, 10).reverse().toString().split(",").map((e) => `OTU ${e}`);
     console.log(topIds);
 
-    // retrieve the otu_label for hovertext ---------------------
+    // Retrieve the otu_label for hovertext
     let labels = filteredId.map(d => d.otu_labels).sort();
 
-    // get all labels for bubble chart
+    // Get all labels for bubble chart
     let allLabels = labels[0];
 
-    // get the top 10 otu_labels for bar chart
+    // Get the Top 10 otu_labels for bar chart
     let topLabels = allLabels.slice(0, 10).reverse();
     console.log(topLabels);
 
-    // filter metadata based on selection use == instead of triple because id is int here
+    // Filter metadata based on selection use
     let metadata = data.metadata.filter((d) => d.id == id);
     console.log(metadata)
 
-    // CREATING OUTPUTS FOR DISPLAY
-
-    // create metadata display -------------
+    // Create metadata display
     displayData = metadata[0]
     console.log(displayData)
 
     indvData = Object.entries(displayData).map(([key, value]) => `<p>${key}: ${value}</p>`).join("");
     console.log(indvData)
 
-    // display metadata
+    // Display metadata
     document.getElementById("sample-metadata").innerHTML = indvData 
 
-    // create bar chart -----------------
+    // Create bar chart
     let barData = [{
         type: "bar",
         x: topSamples,
@@ -100,13 +96,13 @@ function dataByID() {
             b: 50,
             pad: 2
         },
-        title: "Top 10 OTUs (Operational Taxonomic Units) for Selected Individual",
+        title: "Top 10 OTUs for Selected Individual",
         xaxis: {
             title: "Sample Values"
         }
     };
 
-    // create bubble chart ------------------
+    // Create bubble chart 
 
     let bubbleData = [{
         x: allIds,
@@ -130,14 +126,14 @@ function dataByID() {
     };
 
 
-    // plot charts -----------------------
+    // Plot charts
     Plotly.newPlot("bar", barData, barLayout);
     Plotly.newPlot("bubble", bubbleData, bubbleLayout)
 
     });
 };
 
-// initialize dashboard with default selection
+// Initialize dashboard with default selection
 function init() {
     d3.json("samples.json").then( data => {
     
@@ -153,8 +149,8 @@ function init() {
     });
 }
 
-// call function to display default data when page opens
+// Call function to display default data
 init()
 
-// call dataByID() when user makes a different selection
+// Call dataByID() when user makes a different selection
 d3.selectAll("#selDataset").on("change", dataByID);
